@@ -12,22 +12,15 @@ namespace WpfApp1
 {    
     public abstract class Shape
     {
-        public void Select(Point point)
-        {
-            Unselect();
-            if (IsHover(point))
-                Selected = true;
-        }
-        public void Unselect()
-        {
-            Selected = false;
-        }
         public abstract void Draw();
         public abstract bool IsHover(Point point);        
         public abstract string Name();
         protected Point position;
         protected Point Position { get => position; set => position = value; }
-        public bool Selected { get; private set; } = false;
+        protected Brush color;
+        public Brush Color { get => color; set => color = value; }
+        private int index;
+        public int Index { get => index; protected set => index = value; }
     }
 
     public class Circle : Shape
@@ -43,19 +36,16 @@ namespace WpfApp1
                 Name = "circle" + canvas.Children.Count.ToString()
             };
             canvas.Children.Add(Ellipse);
+            color = Brushes.Red;
+            Index = canvas.Children.Count;
         }
 
         public override void Draw()
         {
             Ellipse.Width = Radius * 2;
             Ellipse.Height = Radius * 2;
-            Ellipse.Stroke = defaultColor;
-            Ellipse.Fill = defaultColor;
-            if (Selected)
-            {
-                Ellipse.Stroke = selectColor;
-                Ellipse.Fill = selectColor;
-            }            
+            Ellipse.Stroke = color;
+            Ellipse.Fill = color;            
             Ellipse.SetValue(Canvas.LeftProperty, position.X);
             Ellipse.SetValue(Canvas.TopProperty, position.Y);
         }
@@ -73,8 +63,6 @@ namespace WpfApp1
         }
 
         private Canvas canvas;
-        private readonly Brush defaultColor = Brushes.Red;
-        private readonly Brush selectColor = Brushes.DarkRed;
         public int Radius { get; set; }
         public Ellipse Ellipse { get; private set; }
     }

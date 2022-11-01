@@ -21,12 +21,14 @@ namespace WpfApp1
     public partial class MainWindow : Window
     {
         private List<Shape> shapes;
+        private List<Shape> selectedShapes;
         private bool select = false;
 
         public MainWindow()
         {
             InitializeComponent();
             shapes = new List<Shape>();
+            selectedShapes = new List<Shape>();
             canvas.Focusable = true;
             Loaded += (x, y) => Keyboard.Focus(canvas);
         }
@@ -43,8 +45,9 @@ namespace WpfApp1
 
         private void UnselectAll()
         {
-            foreach (var shape in shapes)
-                shape.Unselect();
+            foreach (var item in selectedShapes)
+                item.Color = Brushes.Red;
+            selectedShapes.Clear();
         }
 
         private void DrawAll()
@@ -55,21 +58,25 @@ namespace WpfApp1
 
         private void canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            //var elementName = (e.OriginalSource as FrameworkElement).Name;
+            //if(!select)MessageBox.Show(elementName);
+
             var pos = e.GetPosition(canvas);
             var hoveredShape = GetHover();
             if (!select)
                 UnselectAll();
 
             if (hoveredShape.Item1)
-                hoveredShape.Item2.Select(pos);
+                selectedShapes.Add(hoveredShape.Item2);
             else
             {
                 pos.X -= 10;
                 pos.Y -= 10;
                 shapes.Add(new Circle(canvas, pos, 10));
-                shapes.Last().Select(e.GetPosition(canvas));
+                selectedShapes.Add(shapes.Last());
             }
-
+            foreach (var selectedShape in selectedShapes)
+                selectedShape.Color = Brushes.Gray;
             DrawAll();
         }
 
@@ -86,14 +93,14 @@ namespace WpfApp1
             switch (e.Key)
             {
                 case Key.Delete:
-                    for (int i = 0; i < shapes.Count; i++)
+                    foreach (var item in selectedShapes)
                     {
-                        if (shapes[i].Selected)
-                        {
-                            canvas.Children.RemoveAt(i + 1);
-                            shapes.RemoveAt(i); 
-                        }
+                        var itmn = item.Name();
+                        object shape = canvas.FindName(item.Name());
+                        if (shape is UIElement)
+                            canvas.Children.Remove(shape as UIElement);
                     }
+                    selectedShapes.Clear();
                     break;
                 case Key.LeftCtrl:
                     select = true;
