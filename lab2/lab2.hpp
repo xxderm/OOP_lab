@@ -3,22 +3,22 @@
 
 namespace Graphics::Shapes {
 
-    class IShape {
+    class Shape {
     public:
-        IShape();
-        IShape(const IShape& other);
+        Shape();
+        Shape(const Shape& other);
         virtual void Render() = 0;
         void PrintPosition() const noexcept;
         void SetPosition(const uint32_t& pos) noexcept;
-        virtual ~IShape();
+        virtual ~Shape();
     protected:
         uint32_t mPosition{};
     };
 
-    class RectangleShape final : public IShape {
+    class RectangleShape final : public Shape {
     public:
         RectangleShape();
-        RectangleShape(const RectangleShape& other) : IShape(other) { }
+        RectangleShape(const RectangleShape& other) : Shape(other) { }
         void Render() override;
         ~RectangleShape();
     };

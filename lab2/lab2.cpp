@@ -2,23 +2,23 @@
 
 namespace Graphics::Shapes {
 
-    Graphics::Shapes::IShape::~IShape() {
+    Graphics::Shapes::Shape::~Shape() {
         std::cout << "IShape Destructor\n";
     }
 
-    IShape::IShape() {
-        std::cout << "IShape Constructor\n";
+    Shape::Shape() {
+        std::cout << "Shape Constructor\n";
     }
 
-    IShape::IShape(const IShape &other) {
+    Shape::Shape(const Shape &other) {
         this->mPosition = other.mPosition;
     }
 
-    void IShape::PrintPosition() const noexcept {
+    void Shape::PrintPosition() const noexcept {
         std::cout << "Shape position: " << this->mPosition << std::endl;
     }
 
-    void IShape::SetPosition(const uint32_t& pos) noexcept {
+    void Shape::SetPosition(const uint32_t& pos) noexcept {
         this->mPosition = pos;
     }
 
